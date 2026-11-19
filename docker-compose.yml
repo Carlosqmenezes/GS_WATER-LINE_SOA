@@ -1,0 +1,22 @@
+# Banco próprio
+services:
+  postgres-alertas:
+    image: postgres:16-alpine
+    container_name: waterline-alertas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: waterline_alertas
+      POSTGRES_USER: waterline_alertas
+      POSTGRES_PASSWORD: ${ALERTAS_DB_SENHA:-alertas_dev}
+    ports:
+      - "5433:5432"
+    volumes:
+      - alertas-dados:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U waterline_alertas -d waterline_alertas"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  alertas-dados:
